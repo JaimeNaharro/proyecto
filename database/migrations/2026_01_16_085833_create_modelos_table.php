@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('modelos', function (Blueprint $table) {
             $table->id();
-            $table->string("nombre");
-            $table->string("descripcion");
+            $table->string('nombre');
+            $table->year('anio_lanzamiento')->nullable();
+            $table->string('tipo_carroceria');
             $table->timestamps();
         });
     }

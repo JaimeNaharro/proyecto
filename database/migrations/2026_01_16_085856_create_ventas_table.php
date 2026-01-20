@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('ventas', function (Blueprint $table) {
             $table->id();
+            $table->date('fecha');
+            $table->decimal('precio_final');
+            $table->string('metodo_pago');
             $table->timestamps();
         });
     }

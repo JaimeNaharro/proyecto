@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('pluses', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre');
+            $table->text('descripcion')->nullable();
+            $table->decimal('precio')->default(0);
             $table->timestamps();
         });
     }
