@@ -15,15 +15,18 @@ return new class extends Migration
             $table->id();
             $table->string('matricula')->unique();
             $table->string('combustible');
-            $table->string('transmision'); // manual / automatica
+            $table->string('transmision'); // manual o automatico
             $table->decimal('precio');
             $table->string('tipo');
             $table->string('color');
-            $table->year('anio');
+            $table->year('anyo');
             $table->integer('cv');
             $table->integer('km');
             $table->integer('puertas');
             $table->integer('plazas');
+            $table->binary("imagen")->nullable();
+            $table->foreignId("modelo_id")->constrained("modelos")->cascadeOnDelete();
+            $table->foreignId("marca_id")->constrained("marcas")->cascadeOnDelete(); 
             $table->timestamps();
         });
     }

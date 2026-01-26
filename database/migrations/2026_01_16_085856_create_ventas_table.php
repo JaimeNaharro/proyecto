@@ -17,6 +17,8 @@ return new class extends Migration
             $table->decimal('precio_final');
             $table->string('metodo_pago');
             $table->timestamps();
+            $table->foreignId("empleado_id")->constrained("empleados")->cascadeOnDelete();
+            $table->foreignId("vehiculo_id")->constrained("vehiculos")->cascadeOnDelete(); 
         });
     }
 
