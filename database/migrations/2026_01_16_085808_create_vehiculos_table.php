@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('matricula')->unique();
             $table->string('combustible');
-            $table->string('transmision'); // manual o automatico
+            $table->string('transmision'); 
             $table->decimal('precio');
             $table->string('tipo');
             $table->string('color');
