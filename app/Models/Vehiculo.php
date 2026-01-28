@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Vehiculo extends Model {
-    // Relación inversa con Cliente
+    // Relacion 1:N con Cliente
     public function cliente() {
         return $this->belongsTo(Cliente::class);
     }
