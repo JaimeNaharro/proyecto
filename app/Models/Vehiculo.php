@@ -11,8 +11,8 @@ class Vehiculo extends Model {
     }
 
     // Relación 1:1 con Venta
-    public function venta_id() {
-        return $this->belongsTo("id")::class;
+    public function venta() {
+        return $this->belongsTo(Venta::class, "venta_id");
     }
 
     // Relación N:1 con Marca
@@ -20,7 +20,7 @@ class Vehiculo extends Model {
         return $this->belongsTo(Marca::class);
     }
     // Relación N:M con Pluses
-    public function pluses_id() {
-        return $this->belongsToMany('id')::class;
+    public function pluses() {
+        return $this->belongsToMany(Venta::class, "pluses_id");
     }
 }

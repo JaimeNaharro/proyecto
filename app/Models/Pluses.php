@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pluses extends Model {
     // Relación N:M
-    public function vehiculos_id() {
-        return $this->belongsToMany('id')::class;
+    public function vehiculos() {
+        return $this->belongsToMany("Vehiculo"::class,"vehiculo_id");
     }
 }

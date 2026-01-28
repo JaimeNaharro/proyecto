@@ -10,7 +10,7 @@ class Venta extends Model {
         return $this->belongsTo(Empleado::class);
     }
     // Relación 1:1 con Vehiculo
-    public function vehiculos_id(){
-        return $this->hasOne("id")::class;
+    public function vehiculos(){
+        return $this->hasOne(Vehiculo::class, "vehiculos_id");
     }
 }
