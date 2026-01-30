@@ -27,7 +27,7 @@ return new class extends Migration
             $table->binary("imagen")->nullable();
             $table->foreignId("cliente_id")->constrained("clientes")->cascadeOnDelete();
             $table->foreignId("marca_id")->constrained("marcas")->cascadeOnDelete(); 
-            $table->foreignId("venta_id")->constrained("ventas")->cascadeOnDelete();
+            $table->foreignId("venta_id")->nullable()->constrained("ventas")->cascadeOnDelete();
             $table->timestamps();
         });
     }
