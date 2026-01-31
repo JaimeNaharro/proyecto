@@ -31,8 +31,6 @@ class VehiculoFactory extends Factory
             'imagen' => null,
             // Relaciones aleatorias (asume que ya existen marcas, clientes y ventas)
             'marca_id' => \App\Models\Marca::all()->random()->id,
-            'cliente_id' => \App\Models\Cliente::all()->random()->id,
-            'venta_id' => \App\Models\Venta::all()->random()->id,
         ];
     }
 }

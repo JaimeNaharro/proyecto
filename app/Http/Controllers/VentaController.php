@@ -27,7 +27,18 @@ class VentaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'precio' => 'required|numeric',
+            'fecha' => 'required|date',
+            'precio_final' => 'required|numeric',
+            'metodo_pago' => 'required|string',
+            'empleado_id' => 'required|exists:empleados,id',
+            'vehiculo_id' => 'required|exists:vehiculos,id',
+        ]);
+
+        \App\Models\Venta::create($data);
+
+        return redirect()->back()->with('success', 'Venta realizada con éxito');
     }
 
     /**

@@ -25,9 +25,8 @@ return new class extends Migration
             $table->integer('puertas');
             $table->integer('plazas');
             $table->binary("imagen")->nullable();
-            $table->foreignId("cliente_id")->constrained("clientes")->cascadeOnDelete();
             $table->foreignId("marca_id")->constrained("marcas")->cascadeOnDelete(); 
-            $table->foreignId("venta_id")->nullable()->constrained("ventas")->cascadeOnDelete();
+            $table->foreignId("cliente_id")->nullable()->constrained("clientes")->cascadeOnDelete(); 
             $table->timestamps();
         });
     }

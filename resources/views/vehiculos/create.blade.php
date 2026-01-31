@@ -33,17 +33,55 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">Propietario (Cliente)</label>
-                    <select name="cliente_id" class="w-full border rounded p-2">
-                        @foreach($clientes as $cliente)
-                            <option value="{{ $cliente->id }}">{{ $cliente->nombre }} {{ $cliente->apellido }}</option>
-                        @endforeach
+                    <label class="block text-sm font-medium">Combustible</label>
+                    <input type="text" name="combustible" placeholder="Diesel/Gasolina" class="w-full border rounded p-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Transmisión</label>
+                    <input type="text" name="transmision" placeholder="Manual/Automático" class="w-full border rounded p-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Tipo</label>
+                    <select name="tipo" class="w-full border rounded p-2">
+                        <option value="berlina">Berlina</option>
+                        <option value="deportivo">Deportivo</option>
+                        <option value="furgoneta">Furgoneta</option>
+                        <option value="crossover">Crossover</option>
+                        <option value="compacto">Compacto</option>
+                        <option value="monovolumen">Monovolumen</option>
+                        <option value="descapotable">Descapotable</option>
+                        <option value="familiar">Familiar</option>
+                        <option value="sedan">Sedán</option>
+                        <option value="todoterreno">Todoterreno</option>
+                        <option value="suv">SUV</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">Combustible</label>
-                    <input type="text" name="combustible" placeholder="Diesel/Gasolina" class="w-full border rounded p-2">
+                    <label class="block text-sm font-medium">Color</label>
+                    <input type="text" name="color" placeholder="color" class="w-full border rounded p-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Año</label>
+                    <input type="number" name="anyo" placeholder="Año" class="w-full border rounded p-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Caballos</label>
+                    <input type="number" name="cv" placeholder="CV" class="w-full border rounded p-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Puertas</label>
+                    <input type="number" name="puertas" placeholder="Puertas" class="w-full border rounded p-2">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Plazas</label>
+                    <input type="number" name="plazas" placeholder="Plazas" class="w-full border rounded p-2">
                 </div>
 
                 <div>

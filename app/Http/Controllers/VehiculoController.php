@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class VehiculoController extends Controller
 {
@@ -23,10 +24,9 @@ class VehiculoController extends Controller
     public function create()
     {
         $marcas = \App\Models\Marca::all();
-        $modelos = \App\Models\Modelo::all();
-        $clientes = \App\Models\Cliente::all(); // Según tu E/R el vehículo posee un cliente
+        $clientes = \App\Models\Cliente::all(); 
 
-        return view('vehiculos.create', compact('marcas', 'modelos', 'clientes'));
+        return view('vehiculos.create', compact('marcas', 'clientes'));
     }
 
     /**
@@ -34,31 +34,31 @@ class VehiculoController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validación: Incluimos la imagen y el resto de campos que tienes en el blade
+        // 1. Validación: Guardamos el resultado en una variable ($data)
         $data = $request->validate([
-            'matricula' => 'required|unique:vehiculos',
-            'precio' => 'required|numeric',
-            'marca_id' => 'required|exists:marcas,id',
-            'cliente_id' => 'required|exists:clientes,id',
+            'matricula'   => 'required|unique:vehiculos',
+            'precio'      => 'required|numeric',
+            'marca_id'    => 'required|exists:marcas,id',
+            'tipo'        => 'required|string',
+            'transmision' => 'required|string',
             'combustible' => 'nullable|string',
-            'km' => 'nullable|integer',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+            'km'          => 'nullable|integer',
+            'cv'          => 'required|integer',
+            'puertas'     => 'required|integer',
+            'plazas'      => 'required|integer',
+            'color'       => 'required|string',
+            'anyo'        => 'required|integer',
+            'imagen'      => 'nullable|image|max:2048', 
         ]);
 
-        // 2. Preparamos los datos para guardar
-        $input = $request->all();
-
-        // 3. Procesamos la imagen si el usuario la ha subido
+        // 2. Procesamos la imagen si existe
         if ($request->hasFile('imagen')) {
-            // Guarda la imagen en storage/app/public/vehiculos
-            $rutaImagen = $request->file('imagen')->store('vehiculos', 'public');
-            
-            // Cambiamos el valor de 'imagen' por la ruta del archivo para la BD
-            $input['imagen'] = $rutaImagen;
+        // Leemos el archivo y lo convertimos en contenido binario
+            $data['imagen'] = file_get_contents($request->file('imagen')->getRealPath());
         }
 
-        // 4. Creamos el registro con los datos procesados
-        \App\Models\Vehiculo::create($input);
+        // 3. Creamos el registro usando SOLO los datos validados ($data)
+        \App\Models\Vehiculo::create($data);
 
         return redirect()->route('vehiculos.index')->with('success', 'Vehículo creado correctamente con su imagen');
     }
@@ -66,9 +66,12 @@ class VehiculoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        // Buscamos el vehículo con su marca
+        $vehiculo = \App\Models\Vehiculo::with('marca')->findOrFail($id);
+        
+        return view('vehiculos.info', compact('vehiculo'));
     }
 
     /**
@@ -93,5 +96,31 @@ class VehiculoController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    // COMPRAR
+    public function comprar($vehiculo_id) {
+        $clienteId = session('cliente_id');
+        if (!$clienteId) return redirect()->route('login');
+
+        $vehiculo = \App\Models\Vehiculo::findOrFail($vehiculo_id);
+        
+        $vehiculo->cliente_id = $clienteId;
+        $vehiculo->save();
+
+        return back()->with('success', '¡Coche añadido a tu garaje!');
+    }
+
+    // CANCELAR (Devolver un coche específico)
+    public function cancelarCompra($vehiculo_id) {
+        $vehiculo = \App\Models\Vehiculo::findOrFail($vehiculo_id);
+        
+        // Verificamos que el coche sea de este cliente antes de borrar
+        if ($vehiculo->cliente_id == session('cliente_id')) {
+            $vehiculo->cliente_id = null;
+            $vehiculo->save();
+            return back()->with('success', 'Coche devuelto al inventario.');
+        }
+        
+        return back()->with('error', 'No puedes devolver un coche que no es tuyo.');
     }
 }
