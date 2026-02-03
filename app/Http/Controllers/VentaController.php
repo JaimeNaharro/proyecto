@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Venta;
+use App\Models\Vehiculo;
+use Illuminate\Support\Facades\DB;
 
 class VentaController extends Controller
 {
@@ -11,7 +14,8 @@ class VentaController extends Controller
      */
     public function index()
     {
-        //
+        $ventas = Venta::with(['cliente', 'vehiculo'])->get();
+        return view('ventas.index', compact('ventas'));
     }
 
     /**
@@ -27,7 +31,47 @@ class VentaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'vehiculo_id' => 'required|exists:vehiculos,id',
+            'metodo_pago' => 'required|string',
+            'pluses_elegidos' => 'nullable|array' // Los pluses que eligió el cliente
+        ]);
+
+        $vehiculo = Vehiculo::findOrFail($request->vehiculo_id);
+        $clienteId = session('cliente_id');
+
+        try {
+            DB::beginTransaction();
+
+            // 1. Calcular precio final (Coche + Pluses)
+            $precioFinal = $vehiculo->precio;
+            if ($request->has('pluses_elegidos')) {
+                $precioExtras = \App\Models\Plus::whereIn('id', $request->pluses_elegidos)->sum('precio');
+                $precioFinal += $precioExtras;
+            }
+
+            // 2. Crear la venta con el precio actualizado
+            Venta::create([
+                'precio' => $vehiculo->precio,
+                'fecha' => now(),
+                'precio_final' => $precioFinal,
+                'metodo_pago' => $request->metodo_pago,
+                'cliente_id' => $clienteId,
+                'vehiculo_id' => $vehiculo->id,
+            ]);
+
+            // 3. (Opcional) Si quieres guardar qué pluses eligió en esta venta específica, 
+            // necesitarías una tabla intermedia venta_plus, pero con actualizar el precio_final suele bastar.
+
+            $vehiculo->update(['cliente_id' => $clienteId]);
+
+            DB::commit();
+            return redirect()->route('cliente.perfil')->with('success', '¡Compra realizada por ' . number_format($precioFinal, 0) . '€!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error al procesar la compra.');
+        }
     }
 
     /**

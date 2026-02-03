@@ -17,8 +17,10 @@ return new class extends Migration
             $table->string('apellido');
             $table->string('dni')->unique();
             $table->string('correo')->unique();
+            $table->string('password');
             $table->string('direccion');
             $table->string('telefono');
+            $table->integer('rol')->default(0);
             $table->timestamps();
         });
     }

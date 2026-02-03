@@ -8,15 +8,6 @@
 <body class="bg-gray-100 p-8">
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <h1 class="text-2xl font-bold mb-6">Registrar Nuevo Vehículo</h1>
-        @if ($errors->any())
-            <div class="bg-red-100 text-red-700 p-3 mb-4 rounded">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>• {{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
         <form action="{{ route('vehiculos.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -24,12 +15,12 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium">Matrícula</label>
-                    <input type="text" name="matricula" class="w-full border rounded p-2" required>
+                    <input type="text" pattern="[0-9]{4}-[A-Z]{3}" name="matricula" placeholder="1234-ABC" class="w-full border rounded p-2" required>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium">Precio (€)</label>
-                    <input type="number" name="precio" step="0.01" class="w-full border rounded p-2" required>
+                    <input type="number" min="0" name="precio" step="0.01" class="w-full border rounded p-2" required>
                 </div>
 
                 <div>
@@ -42,22 +33,21 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">Propietario (Cliente)</label>
-                    <select name="cliente_id" class="w-full border rounded p-2">
-                        @foreach($clientes as $cliente)
-                            <option value="{{ $cliente->id }}">{{ $cliente->nombre }} {{ $cliente->apellido }}</option>
-                        @endforeach
+                    <label class="block text-sm font-medium">Combustible</label>
+                    <select name="combustible" class="w-full border rounded p-2">
+                        <option value="Diesel">Diesel</option>
+                        <option value="Gasolina">Gasolina</option>
+                        <option value="Hibrido">Híbrido</option>
+                        <option value="Electrico">Eléctrico</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">Combustible</label>
-                    <input type="text" name="combustible" placeholder="Diesel/Gasolina" class="w-full border rounded p-2">
-                </div>
-
-                <div>
                     <label class="block text-sm font-medium">Transmisión</label>
-                    <input type="text" name="transmision" placeholder="Manual/Automático" class="w-full border rounded p-2">
+                    <select name="transmision" class="w-full border rounded p-2">
+                        <option value="Manual">Manual</option>
+                        <option value="Automatico">Automático</option>
+                    </select>
                 </div>
 
                 <div>
@@ -79,34 +69,33 @@
 
                 <div>
                     <label class="block text-sm font-medium">Color</label>
-                    <input type="text" name="color" placeholder="color" class="w-full border rounded p-2">
+                    <input type="text" name="color" placeholder="Color" class="w-full border rounded p-2">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium">Año</label>
-                    <input type="number" name="anyo" placeholder="Año" class="w-full border rounded p-2">
+                    <input type="number" min="1901" max="{{date('Y')}}" name="anyo" placeholder="Año" class="w-full border rounded p-2">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium">Caballos</label>
-                    <input type="number" name="cv" placeholder="CV" class="w-full border rounded p-2">
+                    <input type="number" min="1" name="cv" placeholder="CV" class="w-full border rounded p-2">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium">Puertas</label>
-                    <input type="number" name="puertas" placeholder="Puertas" class="w-full border rounded p-2">
+                    <input type="number" min="1" max="6" name="puertas" placeholder="Puertas" class="w-full border rounded p-2">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium">Plazas</label>
-                    <input type="number" name="plazas" placeholder="Plazas" class="w-full border rounded p-2">
+                    <input type="number" min="1" max="9" name="plazas" placeholder="Plazas" class="w-full border rounded p-2">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium">Kilómetros</label>
-                    <input type="number" name="km" class="w-full border rounded p-2">
+                    <input type="number" min="0" name="km" class="w-full border rounded p-2">
                 </div>
-
                 <div class="col-span-2">
                     <label class="block text-sm font-medium">Foto del Vehículo</label>
                     <input type="file" name="imagen" accept="image/*" class="w-full border rounded p-2 bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-green-50 file:text-green-700 hover:file:bg-green-100">

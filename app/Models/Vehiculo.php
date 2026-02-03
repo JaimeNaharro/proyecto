@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vehiculo extends Model {
     use HasFactory;
+    protected $fillable = ['matricula', 'precio', 'marca_id', 'tipo', 'transmision', 'combustible', 'km', 'cv', 'puertas', 'plazas', 'color', 'anyo', 'imagen','cliente_id'];
     // Relacion 1:N con Cliente
-    public function cliente() {
+    public function clientes(){
         return $this->belongsTo(Cliente::class);
     }
     // Relación 1:1 con Venta
     public function venta() {
-        return $this->belongsTo(Venta::class, "venta_id");
+        return $this->hasOne(Venta::class, "vehiculo_id");
     }
     // Relación N:1 con Marca
     public function marca() {
@@ -22,7 +23,4 @@ class Vehiculo extends Model {
     public function pluses() {
         return $this->belongsToMany(Plus::class, 'plus_vehiculo');
     }
-    use HasFactory;
-    protected $fillable = ['matricula', 'precio', 'venta_id', 'marca_id', 'cliente_id', 'tipo', 'transmision', 'combustible', 'km', 'cv', 'puertas', 'plazas', 'color', 'anyo', 'imagen',];
-
 }

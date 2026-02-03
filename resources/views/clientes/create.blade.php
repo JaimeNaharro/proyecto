@@ -33,7 +33,10 @@
                     <label class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
                     <input type="email" name="correo" class="w-full border rounded p-2" required>
                 </div>
-
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <input type="password" name="password" class="w-full border rounded p-2" required>
+                </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Teléfono</label>
                     <input type="text" name="telefono" class="w-full border rounded p-2">
@@ -44,15 +47,14 @@
                     <input type="text" name="direccion" class="w-full border rounded p-2">
                 </div>
             </div>
-
+        
             <button type="submit" class="mt-8 w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition duration-200">
                 Registrarse e ir al Inventario
             </button>
         </form>
-        
-        <p class="mt-4 text-center text-sm text-gray-600">
-            ¿Ya eres cliente? <a href="{{ route('vehiculos.index') }}" class="text-blue-500 hover:underline">Ver vehículos</a>
-        </p>
+        <a href="{{ route('login') }}" style="display:block; text-align:center; margin-top:10px;" class="text-blue-500 hover:underline">
+            Ya tengo cuenta, volver al login
+        </a>
     </div>
 </body>
 </html>

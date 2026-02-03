@@ -13,7 +13,8 @@ return new class extends Migration {
             $table->date('fecha');
             $table->decimal('precio_final');
             $table->string('metodo_pago');
-            $table->foreignId('empleado_id')->constrained('empleados')->cascadeOnDelete();
+            $table->foreignId('cliente_id')->constrained('clientes')->cascadeOnDelete();
+            $table->foreignId("vehiculo_id")->nullable()->constrained("vehiculos")->cascadeOnDelete();
             $table->timestamps();
         });
     }

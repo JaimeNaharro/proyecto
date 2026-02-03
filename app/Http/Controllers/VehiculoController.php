@@ -3,96 +3,120 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Vehiculo;
+use App\Models\Marca;
+use App\Models\Plus;
 
 class VehiculoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Catálogo con buscador y filtrado de disponibilidad
+    public function index(Request $request)
     {
-        // Obtenemos los vehículos con su marca para evitar muchas consultas a la BD
-        $vehiculos = \App\Models\Vehiculo::with('marca')->get();
-        
+        $query = Vehiculo::with('marca')->whereNull('cliente_id');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('matricula', 'LIKE', "%{$search}%")
+                  ->orWhereHas('marca', function($m) use ($search) {
+                      $m->where('nombre', 'LIKE', "%{$search}%");
+                  });
+            });
+        }
+
+        $vehiculos = $query->get();
         return view('vehiculos.index', compact('vehiculos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Formulario para añadir nuevo coche
     public function create()
     {
-        $marcas = \App\Models\Marca::all();
-        $clientes = \App\Models\Cliente::all(); 
-
-        return view('vehiculos.create', compact('marcas', 'clientes'));
+        $marcas = Marca::all();
+        $todosLosPluses = Plus::all();
+        return view('vehiculos.create', compact('marcas', 'todosLosPluses'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Guardar nuevo coche
     public function store(Request $request)
     {
-        // 1. Validación: Guardamos el resultado en una variable ($data)
-        $data = $request->validate([
-            'matricula'   => 'required|unique:vehiculos',
-            'precio'      => 'required|numeric',
-            'marca_id'    => 'required|exists:marcas,id',
-            'cliente_id'  => 'required|exists:clientes,id',
-            'venta_id'  => 'required|exists:ventas,id',
-            'tipo'        => 'required|string',
-            'transmision' => 'required|string',
-            'combustible' => 'nullable|string',
-            'km'          => 'nullable|integer',
-            'cv'          => 'required|integer',
-            'puertas'     => 'required|integer',
-            'plazas'      => 'required|integer',
-            'color'       => 'required|string',
-            'anyo'        => 'required|integer',
-            'imagen'      => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
-        ]);
-
-        // 2. Procesamos la imagen si existe
+        $vehiculo = Vehiculo::create($request->all());
+        if ($request->has('pluses')) {
+            $vehiculo->pluses()->attach($request->input('pluses'));
+        }
         if ($request->hasFile('imagen')) {
-            // Guardamos la imagen y actualizamos la ruta en el array $data
-            $data['imagen'] = $request->file('imagen')->store('vehiculos', 'public');
+            $file = $request->file('imagen');
+            $vehiculo->imagen = file_get_contents($file->getRealPath());
         }
 
-        // 3. Creamos el registro usando SOLO los datos validados ($data)
-        \App\Models\Vehiculo::create($data);
-
-        return redirect()->route('vehiculos.index')->with('success', 'Vehículo creado correctamente con su imagen');
+        $vehiculo->save();
+        return redirect()->route('vehiculos.index')->with('success', 'Vehículo registrado.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Formulario de edición con carga de extras
+    public function edit($id)
     {
-        //
+        $vehiculo = Vehiculo::with('pluses')->findOrFail($id);
+        $marcas = Marca::all();
+        $todosLosPluses = Plus::all();
+        return view('vehiculos.edit', compact('vehiculo', 'marcas', 'todosLosPluses'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Actualizar datos y sincronizar pluses
+    public function update(Request $request, $id)
     {
-        //
+        $vehiculo = Vehiculo::findOrFail($id);
+        $vehiculo->update($request->only(['precio', 'marca_id', 'km']));
+
+        if ($request->has('pluses')) {
+            $vehiculo->pluses()->sync($request->input('pluses'));
+        } else {
+            $vehiculo->pluses()->detach();
+        }
+        return redirect()->route('vehiculos.index')->with('success', 'Coche actualizado.');
+    }
+    // Método para devolver un coche desde el perfil del cliente
+    public function cancelarCompra($vehiculo_id) 
+    {
+        $clienteId = session('cliente_id');
+        $vehiculo = Vehiculo::findOrFail($vehiculo_id);
+        
+        // 1. Buscamos la venta de este cliente con este vehículo y la borramos
+        \App\Models\Venta::where('vehiculo_id', $vehiculo_id)
+            ->where('cliente_id', $clienteId)
+            ->delete();
+
+        // 2. Liberamos el vehículo
+        $vehiculo->update(['cliente_id' => null]);
+
+        return back()->with('success', 'Vehículo devuelto y registro eliminado del historial.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Comprar para clientes
+    public function comprar($vehiculo_id) 
     {
-        //
+        $clienteId = session('cliente_id');
+        if (!$clienteId) return redirect()->route('login');
+
+        $vehiculo = Vehiculo::findOrFail($vehiculo_id);
+        $vehiculo->cliente_id = $clienteId;
+        $vehiculo->save();
+
+        return redirect()->route('vehiculos.index')->with('success', '¡Compra realizada con éxito!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    public function show($id) {
+        // Buscamos el vehículo con su marca
+        $vehiculo = Vehiculo::with('marca')->findOrFail($id);
+        
+        // Traemos TODOS los pluses disponibles en la tienda para que el cliente elija
+        $todosLosPluses = Plus::all(); 
+        
+        // Pasamos ambos a la vista info.blade.php
+        return view('vehiculos.info', compact('vehiculo', 'todosLosPluses'));
+    }
+
+    public function destroy($id) {
+        Vehiculo::findOrFail($id)->delete();
+        return redirect()->route('vehiculos.index')->with('success', 'Coche eliminado.');
     }
 }

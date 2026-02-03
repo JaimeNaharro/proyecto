@@ -26,19 +26,20 @@ class ClienteController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validación (si falla, te devuelve a la misma página)
         $data = $request->validate([
             'dni' => 'required|unique:clientes,dni',
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'correo' => 'required|email|unique:clientes,correo',
+            'password' => 'required|min:6',
+            'direccion' => 'required|string',
+            'telefono' => 'required|string',
+            'vehiculo_id' => 'nullable|exists:vehiculos,id',
         ]);
+        $data['rol']=1;
+        \App\Models\Cliente::create($data);
 
-        // 2. Si llega aquí, todo está bien.
-        \App\Models\Cliente::create($request->all());
-
-        // 3. Redirigimos
-        return redirect()->route('vehiculos.index')->with('success', '¡Cliente registrado!');
+        return redirect()->route('login')->with('success', 'Cuenta creada con éxito');
     }
 
     /**
