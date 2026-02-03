@@ -1,0 +1,11 @@
+[33meb97933[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: checkout: moving from eb979333f7371a60e79a7da82c51f8d16d4e36ee to main
+[33meb97933[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{1}: checkout: moving from main to HEAD
+[33meb97933[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{2}: rebase (abort): returning to refs/heads/main
+[33meaaf290[m HEAD@{3}: commit: 8
+[33mcabc974[m HEAD@{4}: pull origin main --rebase (start): checkout cabc974e9a5472f2bf0a27ccfa3a60edf0264a84
+[33meb97933[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{5}: Branch: renamed refs/heads/main to refs/heads/main
+[33meb97933[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{7}: commit: 3
+[33m90d0d98[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{8}: Branch: renamed refs/heads/master to refs/heads/main
+[33m90d0d98[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{10}: commit: 3
+[33m5542146[m HEAD@{11}: reset: moving to HEAD
+[33m5542146[m HEAD@{12}: commit (initial): 3

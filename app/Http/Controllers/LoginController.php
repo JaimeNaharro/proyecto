@@ -17,23 +17,23 @@ class LoginController extends Controller
         $correo = $request->input('correo');
         $password = $request->input('password');
 
-        // 1. Intentar buscar Empleado (Administrador - Rol 0)
+        // Buscar Empleado
         $empleado = Empleado::where('correo', $correo)->where('password', $password)->first();
         if ($empleado) {
             session([
                 'usuario_nombre' => $empleado->nombre, 
-                'usuario_rol'    => (int)$empleado->rol // Guardamos 0
+                'usuario_rol'    => (int)$empleado->rol 
             ]);
             // El admin va al catálogo para gestionar
             return redirect()->route('vehiculos.index');
         }
 
-        // 2. Intentar buscar Cliente (Comprador - Rol 1)
+        // Buscar Cliente
         $cliente = Cliente::where('correo', $correo)->where('password', $password)->first();
         if ($cliente) {
             session([
                 'usuario_nombre' => $cliente->nombre, 
-                'usuario_rol'    => (int)$cliente->rol, // Guardamos 1
+                'usuario_rol'    => (int)$cliente->rol,
                 'cliente_id'     => $cliente->id
             ]);
             return redirect()->route('vehiculos.index');

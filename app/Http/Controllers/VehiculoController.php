@@ -108,7 +108,7 @@ class VehiculoController extends Controller
         // Buscamos el vehículo con su marca
         $vehiculo = Vehiculo::with('marca')->findOrFail($id);
         
-        // Traemos TODOS los pluses disponibles en la tienda para que el cliente elija
+        // Pluses
         $todosLosPluses = Plus::all(); 
         
         // Pasamos ambos a la vista info.blade.php

@@ -17,7 +17,6 @@ class ClienteController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    // app/Http/Controllers/ClienteController.php
 
     public function create()
     {

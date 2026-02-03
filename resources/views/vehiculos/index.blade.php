@@ -70,10 +70,7 @@
                         
                         <div class="grid">
                             <a href="{{ route('vehiculos.show', $vehiculo->id) }}" class="bg-gray-100 text-gray-600 text-center py-2 rounded-lg font-bold text-xs hover:bg-gray-200 transition">Detalles</a>
-                            
                         </div>
-
-                        {{-- Opciones para administrador --}}
                         @if(session('usuario_rol') === 0)
                             <div class="mt-4 pt-4 border-t border-dashed flex gap-2">
                                 <a href="{{ route('vehiculos.edit', $vehiculo->id) }}" class="flex-1 bg-amber-500 text-white text-center py-2 rounded-lg font-bold text-[10px] uppercase transition">Editar</a>
