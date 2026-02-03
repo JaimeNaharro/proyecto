@@ -80,12 +80,12 @@ class VehiculoController extends Controller
         $clienteId = session('cliente_id');
         $vehiculo = Vehiculo::findOrFail($vehiculo_id);
         
-        // 1. Buscamos la venta de este cliente con este vehículo y la borramos
+        // Buscamos la venta de este cliente con este vehículo y la borramos
         \App\Models\Venta::where('vehiculo_id', $vehiculo_id)
             ->where('cliente_id', $clienteId)
             ->delete();
 
-        // 2. Liberamos el vehículo
+        // Liberamos el vehículo
         $vehiculo->update(['cliente_id' => null]);
 
         return back()->with('success', 'Vehículo devuelto y registro eliminado del historial.');
